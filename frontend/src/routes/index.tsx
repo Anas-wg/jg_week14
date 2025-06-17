@@ -7,6 +7,7 @@ import DefaultLayout from "./layouts/Default";
 import WritePage from "../pages/WritePage";
 import PostDetailPage from "../pages/PostDetailPage";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import GoogleCallback from "../components/auth/GoogleCallback";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignUp />,
+  },
+  {
+    path: "/auth/google/callback",
+    element: <GoogleCallback />,
   },
 ]);
 

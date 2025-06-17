@@ -19,6 +19,10 @@ const SignIn: React.FC = () => {
   const { login } = useAuthStore();
   const navigate = useNavigate();
 
+  const handlegoogleLogin = () => {
+    window.location.href = "http://localhost:3000/login";
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormError(null); // 이전 에러 메시지 초기화
@@ -101,6 +105,7 @@ const SignIn: React.FC = () => {
         </div>
         <Button
           className="flex items-center justify-center gap-4"
+          onClick={handlegoogleLogin}
           variant="no_background"
           size="lg"
         >

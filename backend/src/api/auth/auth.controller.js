@@ -46,7 +46,6 @@ export const login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    // 응답 객체에 user 정보를 추가합니다.
     const responseUser = {
       userId: user[0].user_id,
       nickname: user[0].nickname,
