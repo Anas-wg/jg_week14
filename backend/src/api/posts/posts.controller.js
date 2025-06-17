@@ -1,22 +1,71 @@
 import db from '../../config/db.js';
 
-// 'exports.getPosts ='를 'export const getPosts ='으로 변경합니다.
+// Pagination 잆이
+// export const getPosts = async (req, res) => {
+//   try {
+//     const [posts] = await db.query(`
+//       SELECT p.post_id, p.title, p.created_at, u.nickname as author
+//       FROM POST p
+//       JOIN USER u ON p.author_id = u.user_id
+//       ORDER BY p.created_at DESC
+//     `);
+//     res.status(200).json(posts);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: '서버 오류' });
+//   }
+// };
+
 export const getPosts = async (req, res) => {
+  const page = parseInt(req.query.page || '1', 10);
+  const limit = parseInt(req.query.limit || '10', 10);
+
+  if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+    return res.status(400).json({ error: '유효하지 않은 페이지 또는 limit 값입니다.' });
+  }
+
   try {
-    const [posts] = await db.query(`
-      SELECT p.post_id, p.title, p.created_at, u.nickname as author
+    const [[{ totalPosts }]] = await db.query('SELECT COUNT(*) as totalPosts FROM Post');
+    const totalPages = Math.ceil(totalPosts / limit);
+    const offset = (page - 1) * limit;
+
+    // 1. DB에서 데이터를 가져옵니다 (SQL은 이전과 동일합니다).
+    const [postsFromDB] = await db.query(`
+      SELECT p.post_id, p.title, p.content, p.created_at, u.nickname as author_nickname
       FROM POST p
       JOIN USER u ON p.author_id = u.user_id
       ORDER BY p.created_at DESC
-    `);
-    res.status(200).json(posts);
+      LIMIT ? OFFSET ?
+    `, [limit, offset]);
+
+    // 2. 프론트엔드가 원하는 중첩 구조로 데이터를 가공합니다.
+    const formattedPosts = postsFromDB.map(post => ({
+      post_id: post.post_id,
+      title: post.title,
+      content: post.content,
+      created_at: post.created_at,
+      author: {
+        nickname: post.author_nickname
+      }
+    }));
+
+    // 3. 가공된 데이터와 페이지네이션 정보를 함께 응답합니다.
+    res.status(200).json({
+      posts: formattedPosts,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalPosts: totalPosts
+      }
+    });
+
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching posts:', err);
     res.status(500).json({ error: '서버 오류' });
   }
 };
 
-// 'exports.createPost ='를 'export const createPost ='으로 변경합니다.
+
 export const createPost = async (req, res) => {
   const { title, content } = req.body;
   const { userId } = req.user;
@@ -123,6 +172,42 @@ export const createComment = async (req, res) => {
     res.status(201).json(newComment[0]);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+  }
+};
+
+// 최근 글 2개 가져오는 API
+export const getLatestPosts = async (req, res) => {
+  try {
+    // 1. DB에서 데이터를 가져오는 SQL 쿼리는 그대로 둡니다.
+    const [postsFromDB] = await db.query(`
+      SELECT p.post_id, p.title, p.content, p.created_at, u.nickname as author_nickname
+      FROM POST p
+      JOIN USER u ON p.author_id = u.user_id
+      ORDER BY p.created_at DESC
+      LIMIT 2
+    `);
+
+    // 2. DB에서 가져온 데이터를 프론트엔드가 원하는 중첩 구조로 가공합니다.
+    const formattedPosts = postsFromDB.map(post => {
+      return {
+        post_id: post.post_id,
+        title: post.title,
+        content: post.content,
+        created_at: post.created_at,
+        // author_nickname을 author 객체 안의 nickname으로 옮겨줍니다.
+        author: {
+          nickname: post.author_nickname
+        }
+        // imageUrl 등 다른 필드도 필요하다면 여기에 추가합니다.
+      };
+    });
+
+    // 3. 가공된 데이터를 최종적으로 응답합니다.
+    res.status(200).json(formattedPosts);
+
+  } catch (err) {
+    console.error('Error fetching latest posts:', err);
     res.status(500).json({ error: '서버 오류가 발생했습니다.' });
   }
 };

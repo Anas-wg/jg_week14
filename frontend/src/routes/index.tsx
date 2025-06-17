@@ -4,6 +4,7 @@ import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import BoardPage from "../pages/BoardPage";
 import DefaultLayout from "./layouts/Default";
+import WritePage from "../pages/WritePage";
 
 const router = createBrowserRouter([
   {
@@ -14,9 +15,15 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
+        // 게시글 목록
         path: "/posts",
         element: <BoardPage />,
       },
+      {
+        path: "/posts/new",
+        element: <WritePage />,
+      },
+      // { path: "/posts/:postId", element: <PostDetailPage /> }, // 상세 페이지도 추가 필요
     ],
   },
   {

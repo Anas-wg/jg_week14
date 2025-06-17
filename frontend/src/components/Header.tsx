@@ -27,7 +27,7 @@ const Header: React.FC = () => {
     "text-stone-400 text-xl font-normal font-['Brown'] hover:text-black";
 
   return (
-    <header className="w-full flex justify-between items-center py-4 px-8">
+    <header className="w-full flex justify-between items-center py-4 px-16">
       <NavLink
         to="/"
         className="text-black text-3xl font-normal font-['Brown']"
