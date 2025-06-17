@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import InputField from "../components/common/InputField";
 import Button from "../components/common/Button";
 import { useFormValidation } from "../hooks/useFormValidate";
-import { signup } from "../api/auth"; // 1. 위에서 만든 API 함수를 불러옵니다.
+import { signup } from "../api/auth";
 import { type UserSignupData } from "../types/user";
 import main_logo from "../assets/banner_logo.png";
 import { NavLink } from "react-router";
@@ -24,20 +24,17 @@ const SignUp: React.FC = () => {
     // 폼 유효성 검사
     if (!validateForm()) {
       console.log("폼 유효성 검사 실패");
-      return; // 유효하지 않으면 여기서 중단
+      return;
     }
 
     try {
-      // 2. 유효성 검사를 통과하면 signup API 함수를 호출합니다.
       const data = await signup(values);
 
       console.log("회원가입 성공:", data);
       alert(data.message || "회원가입이 완료되었습니다.");
 
-      // 3. 성공 시 로그인 페이지로 이동합니다.
       navigate("/signin");
     } catch (err) {
-      // 4. API 요청 실패 시 에러를 처리합니다.
       if (err instanceof Error) {
         console.error("회원가입 실패:", err);
         alert(err.message);
@@ -57,7 +54,7 @@ const SignUp: React.FC = () => {
         />
         <h1 className="mt-6 text-4xl font-normal text-black">The Board.</h1>
       </div>
-      <form onSubmit={handleSubmit} className="flex w-80 flex-col gap-6">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <InputField
           label="E-mail"
           type="email"

@@ -62,7 +62,6 @@ const Header: React.FC = () => {
         </NavLink>
       </nav>
 
-      {/* _hasHydrated가 true이고, isLoggedIn이 true일 때만 닉네임 부분을 렌더링합니다. */}
       {_hasHydrated && isLoggedIn ? (
         <div className="flex items-center gap-4">
           <span className="font-bold">

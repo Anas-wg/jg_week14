@@ -8,7 +8,6 @@ const MainPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    // 페이지가 로드될 때 최신 게시글을 불러오는 API를 호출합니다.
     const fetchPosts = async () => {
       try {
         const latestPosts = await getLatestPosts(); // (API 함수)

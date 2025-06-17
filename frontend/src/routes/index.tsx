@@ -5,6 +5,8 @@ import SignUp from "../pages/SignUp";
 import BoardPage from "../pages/BoardPage";
 import DefaultLayout from "./layouts/Default";
 import WritePage from "../pages/WritePage";
+import PostDetailPage from "../pages/PostDetailPage";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -21,9 +23,13 @@ const router = createBrowserRouter([
       },
       {
         path: "/posts/new",
-        element: <WritePage />,
+        element: (
+          <ProtectedRoute>
+            <WritePage />
+          </ProtectedRoute>
+        ),
       },
-      // { path: "/posts/:postId", element: <PostDetailPage /> }, // 상세 페이지도 추가 필요
+      { path: "/posts/:postId", element: <PostDetailPage /> },
     ],
   },
   {

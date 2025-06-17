@@ -137,11 +137,27 @@ export const getPostById = async (req, res) => {
       }
     });
 
+    const postData = postResult[0];
+
     // 4. 최종적으로 게시글 정보와 계층화된 댓글 목록을 함께 응답합니다.
+
     res.status(200).json({
-      ...post,
+      post_id: postData.post_id,
+      title: postData.title,
+      content: postData.content,
+      view_count: postData.view_count,
+      created_at: postData.created_at,
+      updated_at: postData.updated_at,
+      author: {
+        nickname: postData.author_nickname
+      },
       comments: rootComments,
     });
+    // // 4. 최종적으로 게시글 정보와 계층화된 댓글 목록을 함께 응답합니다.
+    // res.status(200).json({
+    //   ...post,
+    //   comments: rootComments,
+    // });
 
   } catch (err) {
     console.error(err);

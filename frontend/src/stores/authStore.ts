@@ -17,7 +17,6 @@ interface AuthState {
 
 // 스토어를 생성합니다.
 const useAuthStore = create(
-  // persist 미들웨어를 사용하여 스토어 상태를 로컬 스토리지에 저장합니다.
   persist<AuthState>(
     (set) => ({
       // 초기 상태
@@ -26,14 +25,11 @@ const useAuthStore = create(
       isLoggedIn: false,
       _hasHydrated: false, // 초기값은 false
 
-      // 로그인 액션: 토큰을 받아서 상태를 업데이트합니다.
+      // 로그인 액션: 토큰을 받아서 상태를 업데이트
       login: (token) => {
         const base64Url = token.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
 
-        // --- 이 부분을 수정합니다 ---
-        // atob는 Latin-1을 기준으로 디코딩하므로, 유니코드 문자열에 문제가 생길 수 있습니다.
-        // TextDecoder를 사용하여 명시적으로 UTF-8로 디코딩합니다.
         const decodedString = atob(base64);
 
         const bytes = new Uint8Array(decodedString.length);
@@ -45,12 +41,6 @@ const useAuthStore = create(
         // --- 수정 끝 ---
 
         const payload = JSON.parse(jsonPayload);
-
-        console.log("--- JWT 디코딩 결과 (store.ts) ---");
-        console.log("payload:", payload);
-        console.log("userId:", payload.userId);
-        console.log("nickname:", payload.nickname);
-        console.log("-----------------------------------");
 
         set({
           accessToken: token,

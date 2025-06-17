@@ -1,5 +1,5 @@
 import apiClient from "./client";
-import { type Post } from "../types/post"; // Post 타입 import
+import { type Post, type PostDetail } from "../types/post"; // Post 타입 import
 
 // 최신 게시글 2개를 가져오는 API 함수
 export const getLatestPosts = async (): Promise<Post[]> => {
@@ -45,6 +45,17 @@ export const createPost = async (postData: CreatePostData): Promise<Post> => {
     return response.data;
   } catch (error) {
     console.error("게시글 생성에 실패했습니다:", error);
+    throw error;
+  }
+};
+
+// 특정 ID의 게시글 상세 정보를 가져오는 함수
+export const getPostById = async (postId: string): Promise<PostDetail> => {
+  try {
+    const response = await apiClient.get(`/posts/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`게시글(id: ${postId})을 불러오는 데 실패했습니다:`, error);
     throw error;
   }
 };
