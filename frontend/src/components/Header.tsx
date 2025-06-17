@@ -66,7 +66,6 @@ const Header: React.FC = () => {
       {_hasHydrated && isLoggedIn ? (
         <div className="flex items-center gap-4">
           <span className="font-bold">
-            {/* user가 존재하고 nickname이 있을 때만 표시, 없으면 "환영합니다!" */}
             {user?.nickname ? `${user.nickname}님, 환영합니다!` : "환영합니다!"}
           </span>
           <Button variant="secondary" size="sm" onClick={handleLogout}>

@@ -110,14 +110,14 @@ const SignIn: React.FC = () => {
             </Button>
           </NavLink>
         </div>
-        <Button
+        {/* <Button
           className="flex items-center justify-center gap-4"
           variant="no_background"
           size="lg"
         >
           <img src={google_logo} alt="Google logo" />
           Sign in with Google
-        </Button>
+        </Button> */}
       </form>
     </div>
   );
