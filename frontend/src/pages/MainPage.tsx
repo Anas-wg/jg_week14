@@ -7,6 +7,7 @@ import { getLatestPosts } from "../api/posts";
 const MainPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
+  // useEffect 훅 통해서 렌더링 완료시 1회만 최근 게시물 데이터 fetch
   useEffect(() => {
     const fetchPosts = async () => {
       try {

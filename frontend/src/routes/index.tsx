@@ -14,6 +14,7 @@ const router = createBrowserRouter([
     element: <DefaultLayout />,
     children: [
       {
+        // 메인 페이지
         path: "/",
         element: <MainPage />,
       },
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
         element: <BoardPage />,
       },
       {
+        // 글쓰기 페이지
         path: "/posts/new",
         element: (
           <ProtectedRoute>
@@ -30,19 +32,30 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "/posts/:postId", element: <PostDetailPage /> },
-      { path: "/write", element: <WritePage /> },
+      // 게시물 상세
+      {
+        path: "/posts/:postId",
+        element: <PostDetailPage />,
+      },
+      {
+        // 수정
+        path: "/write",
+        element: <WritePage />,
+      },
     ],
   },
   {
+    // 로그인
     path: "/signin",
     element: <SignIn />,
   },
   {
+    // 회원가입
     path: "/signup",
     element: <SignUp />,
   },
   {
+    // Google OAuth
     path: "/auth/google/callback",
     element: <GoogleCallback />,
   },

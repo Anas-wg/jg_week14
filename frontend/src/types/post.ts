@@ -1,3 +1,4 @@
+// PostCard 정보
 export interface Post {
   post_id: number;
   title: string;
@@ -7,7 +8,7 @@ export interface Post {
     nickname: string;
   };
   created_at: string;
-  imageUrl?: string; // 게시글에 연관된 이미지 URL (선택적)
+  imageUrl?: string; // 게시글에서 parsing한 이미지 태그
 }
 
 // 게시글 상세 정보 타입
@@ -21,7 +22,7 @@ export interface PostDetail {
     id: number;
     nickname: string;
   };
-  comments: Comment[]; // 댓글 목록 포함
+  comments: Comment[]; // 댓글 목록
 }
 
 export interface Comment {
@@ -30,11 +31,11 @@ export interface Comment {
   author_id: number;
   content: string;
   created_at: string;
-  parent_comment_id: number | null; // 1. 오타 수정 및 null 허용
+  parent_comment_id: number | null;
 
-  // 2. API가 JOIN을 통해 보내주는 추가 정보
+  // 댓글 작성자
   author_nickname: string;
 
-  // 3. 컨트롤러에서 계층 구조로 만들 때 추가되는 정보
+  // 대댓글 리스트
   replies: Comment[];
 }

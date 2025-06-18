@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware"; // persist 미들웨어 import
+import { persist } from "zustand/middleware"; // 영구적 저장용 미들웨어 import
 
-// 스토어의 상태와 액션에 대한 타입을 정의합니다.
+// 사용자 인증상태 인터페이스 정의
 interface AuthState {
   accessToken: string | null;
   user: {
@@ -15,7 +15,7 @@ interface AuthState {
   setHasHydrated: (state: boolean) => void;
 }
 
-// 스토어를 생성합니다.
+// 스토어를 생성
 const useAuthStore = create(
   persist<AuthState>(
     (set) => ({
@@ -23,10 +23,11 @@ const useAuthStore = create(
       accessToken: null,
       user: null,
       isLoggedIn: false,
-      _hasHydrated: false, // 초기값은 false
+      _hasHydrated: false,
 
-      // 로그인 액션: 토큰을 받아서 상태를 업데이트
+      // 로그인 액션: 토큰을 받아서 사용자 로그인 상태 업데이트
       login: (token) => {
+        // token decoding으로 User 정보 얻어내기
         const base64Url = token.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
 
@@ -36,12 +37,11 @@ const useAuthStore = create(
         for (let i = 0; i < decodedString.length; i++) {
           bytes[i] = decodedString.charCodeAt(i);
         }
-        // UTF-8로 최종 디코딩
         const jsonPayload = new TextDecoder("utf-8").decode(bytes);
-        // --- 수정 끝 ---
 
         const payload = JSON.parse(jsonPayload);
 
+        // 얻어낸 정보 Zustand Store에 저장
         set({
           accessToken: token,
           user: {
@@ -52,7 +52,7 @@ const useAuthStore = create(
         });
       },
 
-      // 로그아웃 액션: 모든 상태를 초기값으로 리셋합니다.
+      // Logout시 모두 초기화
       logout: () => {
         set({
           accessToken: null,
@@ -60,12 +60,14 @@ const useAuthStore = create(
           isLoggedIn: false,
         });
       },
+      // persisted state로 저장 => 로그인 여부를 기억
       setHasHydrated: (state) => {
         set({ _hasHydrated: state });
       },
     }),
     {
-      name: "auth-storage", // 로컬 스토리지에 저장될 때 사용될 키 이름
+      // 로컬 스토리지에 저장
+      name: "auth-storage",
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated?.(true);
       },

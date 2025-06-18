@@ -6,7 +6,7 @@ interface LatestPostsSectionProps {
   posts: Post[];
 }
 
-// API 로직으로부터 받은 게시글 목록을 Props로 받음
+// Props API 로직으로부터 받은 게시글 목록
 const LatestPostsSection: React.FC<LatestPostsSectionProps> = ({ posts }) => {
   return (
     <div className="w-full max-w-4xl">
