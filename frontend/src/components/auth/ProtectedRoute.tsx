@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
-
+  // 렌더링 완료시 로그인 상태 체크
   useEffect(() => {
     if (!isLoggedIn) {
       alert("로그인이 필요한 기능입니다.");

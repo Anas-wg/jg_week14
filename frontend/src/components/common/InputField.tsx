@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 
+// 공통 InputField 컴포넌트
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string; // 라벨 텍스트
   helperText?: string; // 입력창 아래에 표시될 도움말 텍스트
@@ -7,16 +8,7 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
-  (
-    {
-      label,
-      helperText,
-      errorMessage,
-      className = "",
-      ...props // type, placeholder, value, onChange 등 나머지 모든 input 속성
-    },
-    ref
-  ) => {
+  ({ label, helperText, errorMessage, className = "", ...props }, ref) => {
     const hasError = !!errorMessage;
     const labelColor = hasError ? "text-red-500" : "text-primary-blue";
     const borderColor = hasError ? "border-red-500" : "border-black";

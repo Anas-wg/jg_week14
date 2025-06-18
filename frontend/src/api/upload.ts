@@ -1,10 +1,11 @@
 import apiClient from "./client";
 
+// 이미지 표출위한 API 호출 함수
 export const uploadImage = async (
   imageFile: File
 ): Promise<{ imageUrl: string }> => {
   const formData = new FormData();
-  formData.append("image", imageFile); // 'image'는 백엔드 multer에서 설정한 key와 일치해야 함
+  formData.append("image", imageFile);
 
   try {
     const response = await apiClient.post("/uploads/image", formData, {

@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 
+// 공통 버튼 컴포넌트
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "danger" | "no_background";
@@ -31,7 +32,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     };
 
-    // sizeStyles 부분을 고정 크기로 변경합니다.
+    // sizeStyles 부분을 고정 크기로 변경
     const sizeStyles = {
       sm: "w-[80px] h-[40px] text-xs", // 80px * 40px
       md: "w-[140px] h-[40px] text-sm", // 140px * 40px
@@ -47,8 +48,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const combinedClassName = [
       baseStyle,
       variantStyles[variant],
-      heightAndTextStyle, // h-[40px] 및 text-..
-      widthStyle, // w-[...] 또는 w-full
+      heightAndTextStyle,
+      widthStyle,
       className,
     ]
       .filter(Boolean)

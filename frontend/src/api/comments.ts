@@ -6,7 +6,7 @@ interface CreateCommentData {
   parent_comment_id?: number | null;
 }
 
-// 새 댓글을 생성하는 API 함수
+// 새 댓글 생성
 export const createComment = async (
   postId: string,
   commentData: CreateCommentData

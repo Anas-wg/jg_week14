@@ -10,13 +10,13 @@ const GoogleCallback: React.FC = () => {
   const login = useAuthStore((state) => state.login); // 스토어 login 함수 가져오기
 
   useEffect(() => {
+    // URL 분리
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
     const error = params.get("error");
 
     if (token) {
-      // 스토어의 login 함수에 토큰만 전달합니다.
-      login(token); // <-- 인수를 토큰 하나만 전달
+      login(token);
 
       console.log("구글 로그인 성공! 토큰 수신:", token);
       alert("구글 로그인 성공!");
