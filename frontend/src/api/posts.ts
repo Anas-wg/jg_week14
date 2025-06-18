@@ -63,12 +63,23 @@ export const getPostById = async (postId: string): Promise<PostDetail> => {
 export const updatePost = async (
   postId: number,
   postData: { title: string; content: string }
-) => {
-  const response = await apiClient.put(`/api/posts/${postId}`, postData);
-  return response.data;
+): Promise<Post> => {
+  try {
+    if (!postId || isNaN(postId)) {
+      throw new Error('유효하지 않은 게시글 ID입니다.');
+    }
+    if (!postData.title.trim() || !postData.content.trim()) {
+      throw new Error('제목과 내용은 필수 입력사항입니다.');
+    }
+    const response = await apiClient.put(`/posts/${postId}`, postData);
+    return response.data;
+  } catch (error) {
+    console.error(`게시글(id: ${postId}) 수정에 실패했습니다:`, error);
+    throw error;
+  }
 };
 
 export const deletePost = async (postId: number) => {
-  const response = await apiClient.delete(`/api/posts/${postId}`);
+  const response = await apiClient.delete(`/posts/${postId}`);
   return response.data;
 };

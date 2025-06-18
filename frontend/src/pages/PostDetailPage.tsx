@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useNavigate 추가
-import { getPostById } from "../api/posts";
+import { useParams, useNavigate } from "react-router-dom";
+import { getPostById, deletePost, updatePost } from "../api/posts";
 import { type PostDetail } from "../types/post";
 import { createComment } from "../api/comments";
 
-import useAuthStore from "../stores/authStore"; // 스토어 경로 확인
+import useAuthStore from "../stores/authStore";
 
-import CommentList from "../components/Main/comments/CommentList"; // 분리된 CommentList 불러오기
+import CommentList from "../components/Main/comments/CommentList";
 import CommentForm from "../components/Main/comments/CommentForm";
 
 const PostDetailPage: React.FC = () => {
@@ -15,8 +15,27 @@ const PostDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [replyTo, setReplyTo] = useState<number | null>(null);
 
-  const { isLoggedIn } = useAuthStore();
-  // const navigate = useNavigate();
+  const { isLoggedIn, user } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleEdit = async () => {
+    if (!post) return;
+    navigate(`/write?edit=true&postId=${post.post_id}`);
+  };
+
+  const handleDelete = async () => {
+    if (!post || !window.confirm("정말로 이 게시글을 삭제하시겠습니까?"))
+      return;
+
+    try {
+      await deletePost(post.post_id);
+      alert("게시글이 성공적으로 삭제되었습니다.");
+      navigate("/posts"); // navigate 수정
+    } catch (error) {
+      console.error("게시글 삭제 실패:", error);
+      alert("게시글 삭제에 실패했습니다.");
+    }
+  };
 
   const fetchPost = useCallback(async () => {
     if (!postId) return;
@@ -40,6 +59,26 @@ const PostDetailPage: React.FC = () => {
     parentId: number | null = null
   ) => {
     if (!postId) return;
+    if (!isLoggedIn) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+    if (!content.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+    if (content.length > 500) {
+      alert("댓글은 최대 500자까지 작성할 수 있습니다.");
+      return;
+    }
+    if (
+      parentId !== null &&
+      !post?.comments.find((c) => c.comment_id === parentId)
+    ) {
+      alert("존재하지 않는 부모 댓글입니다.");
+      return;
+    }
+
     try {
       await createComment(postId, { content, parent_comment_id: parentId });
       alert("댓글이 성공적으로 등록되었습니다.");
@@ -65,6 +104,19 @@ const PostDetailPage: React.FC = () => {
               <span>
                 작성일: {new Date(post.created_at).toLocaleDateString()}
               </span>
+              {isLoggedIn && user && post.author.id === user.userId && (
+                <div className="flex gap-2">
+                  <button
+                    className="text-primary-blue font-bold"
+                    onClick={handleEdit}
+                  >
+                    수정
+                  </button>
+                  <button className="font-bold" onClick={handleDelete}>
+                    삭제
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </header>

@@ -31,6 +31,7 @@ const router = createBrowserRouter([
         ),
       },
       { path: "/posts/:postId", element: <PostDetailPage /> },
+      { path: "/write", element: <WritePage /> },
     ],
   },
   {

@@ -3,8 +3,8 @@ export interface Post {
   title: string;
   content: string;
   author: {
-    user_id: string;
     id: number;
+    nickname: string;
   };
   created_at: string;
   imageUrl?: string; // 게시글에 연관된 이미지 URL (선택적)
@@ -18,7 +18,7 @@ export interface PostDetail {
   created_at: string;
   view_count: number;
   author: {
-    user_id: number;
+    id: number;
     nickname: string;
   };
   comments: Comment[]; // 댓글 목록 포함

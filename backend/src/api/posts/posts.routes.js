@@ -14,8 +14,8 @@ router.get('/:postId', getPostById);
 router.post('/:postId/comments', verifyToken, createComment);
 
 
-router.put('/:id', verifyToken, updatePost); // 게시물 수정 (PUT)
-router.delete('/:id', verifyToken, deletePost); // 게시물 삭제 (DELETE)
+router.put('/:postId', verifyToken, updatePost); // 게시물 수정 (PUT)
+router.delete('/:postId', verifyToken, deletePost); // 게시물 삭제 (DELETE)
 
 
 
