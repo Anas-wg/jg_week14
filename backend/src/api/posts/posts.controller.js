@@ -149,6 +149,7 @@ export const getPostById = async (req, res) => {
       created_at: postData.created_at,
       updated_at: postData.updated_at,
       author: {
+        id: postData.author_id,
         nickname: postData.author_nickname
       },
       comments: rootComments,
@@ -213,6 +214,7 @@ export const getLatestPosts = async (req, res) => {
         created_at: post.created_at,
         // author_nickname을 author 객체 안의 nickname으로 옮겨줍니다.
         author: {
+          // user_id: post.author.id,
           nickname: post.author_nickname
         }
         // imageUrl 등 다른 필드도 필요하다면 여기에 추가합니다.
@@ -227,3 +229,82 @@ export const getLatestPosts = async (req, res) => {
     res.status(500).json({ error: '서버 오류가 발생했습니다.' });
   }
 };
+
+
+
+// ----------------------------------------------------
+// 게시물 수정 (Update) 기능 추가
+export const updatePost = async (req, res) => {
+  const { id } = req.params; // URL 파라미터에서 게시물 ID 가져오기
+  const { title, content } = req.body; // 요청 본문에서 수정할 내용 가져오기
+  const userId = req.userId; // verifyToken 미들웨어에서 추가된 로그인 사용자 ID
+
+  if (!userId) {
+    return res.status(401).json({ error: '로그인이 필요합니다.' });
+  }
+
+  try {
+    // 1. 게시물이 존재하는지 확인 및 소유자 확인
+    const [post] = await db.query('SELECT user_id FROM POSTS WHERE post_id = ?', [id]);
+
+    if (!post.length) {
+      return res.status(404).json({ error: '게시물을 찾을 수 없습니다.' });
+    }
+
+    if (post[0].user_id !== userId) {
+      return res.status(403).json({ error: '이 게시물을 수정할 권한이 없습니다.' });
+    }
+
+    // 2. 게시물 업데이트
+    const [result] = await db.query('UPDATE POSTS SET title = ?, content = ?, updated_at = NOW() WHERE post_id = ?', [
+      title,
+      content,
+      id,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ error: '게시물 수정에 실패했습니다.' });
+    }
+
+    res.status(200).json({ message: '게시물이 성공적으로 수정되었습니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+  }
+};
+
+// 게시물 삭제 (Delete) 기능 추가
+export const deletePost = async (req, res) => {
+  const { id } = req.params; // URL 파라미터에서 게시물 ID 가져오기
+  const userId = req.userId; // verifyToken 미들웨어에서 추가된 로그인 사용자 ID
+
+  if (!userId) {
+    return res.status(401).json({ error: '로그인이 필요합니다.' });
+  }
+
+  try {
+    // 1. 게시물이 존재하는지 확인 및 소유자 확인
+    const [post] = await db.query('SELECT user_id FROM POSTS WHERE post_id = ?', [id]);
+
+    if (!post.length) {
+      return res.status(404).json({ error: '게시물을 찾을 수 없습니다.' });
+    }
+
+    if (post[0].user_id !== userId) {
+      return res.status(403).json({ error: '이 게시물을 삭제할 권한이 없습니다.' });
+    }
+
+    // 2. 게시물 삭제
+    const [result] = await db.query('DELETE FROM POSTS WHERE post_id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ error: '게시물 삭제에 실패했습니다.' });
+    }
+
+    res.status(200).json({ message: '게시물이 성공적으로 삭제되었습니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+  }
+};
+

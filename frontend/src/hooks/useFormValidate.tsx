@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { useState, useCallback } from "react";
 
-// 유효성 검사 규칙을 정의하는 validate gkatn
+// 유효성 검사 규칙을 정의하는 validate
 const validate = (name: string, value: string) => {
   switch (name) {
     case "email": {
@@ -26,7 +26,6 @@ const validate = (name: string, value: string) => {
     case "none": {
       return "";
     }
-    // 다른 필드에 대한 유효성 검사도 여기에 추가할 수 있습니다.
     default:
       return "";
   }

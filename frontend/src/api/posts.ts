@@ -59,3 +59,16 @@ export const getPostById = async (postId: string): Promise<PostDetail> => {
     throw error;
   }
 };
+
+export const updatePost = async (
+  postId: number,
+  postData: { title: string; content: string }
+) => {
+  const response = await apiClient.put(`/api/posts/${postId}`, postData);
+  return response.data;
+};
+
+export const deletePost = async (postId: number) => {
+  const response = await apiClient.delete(`/api/posts/${postId}`);
+  return response.data;
+};
